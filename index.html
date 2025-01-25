@@ -11,11 +11,16 @@
     <div id="app">
         <header>
             <h1>Welcome, <span id="username"></span>!</h1>
+            <button id="edit-username-btn">Edit Username</button>
         </header>
         <main>
             <div id="profile">
                 <h2>Your Profile</h2>
                 <p>Username: <span id="profile-username"></span></p>
+                <div id="edit-username" style="display:none;">
+                    <input type="text" id="new-username" placeholder="New Username">
+                    <button id="save-username-btn">Save</button>
+                </div>
             </div>
             <div id="planner">
                 <h2>Your Conferences</h2>
@@ -29,3 +34,4 @@
     </div>
 </body>
 </html>
+
