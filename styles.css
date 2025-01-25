@@ -20,15 +20,21 @@ main {
     margin-top: 20px;
 }
 
-#add-conference-btn {
+#add-conference-btn, #save-username-btn, #edit-username-btn {
     background-color: #0078d7;
     color: white;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 5px;
+    margin-top: 10px;
 }
 
-#add-conference-btn:hover {
+#add-conference-btn:hover, #save-username-btn:hover, #edit-username-btn:hover {
     background-color: #005fa3;
+}
+
+#edit-username input {
+    padding: 5px;
+    margin-top: 10px;
 }
