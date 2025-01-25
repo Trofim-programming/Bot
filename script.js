@@ -32,7 +32,7 @@ function updateConferenceList() {
     conferences.forEach((conf, index) => {
         const listItem = document.createElement("li");
         listItem.textContent = `${conf.name} - ${formatTime(conf.date)}`;
-        
+
         // Создать таймер
         const timerElement = document.createElement("span");
         timerElement.id = `timer-${index}`;
