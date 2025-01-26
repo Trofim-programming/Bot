@@ -32,3 +32,39 @@ h1, h2, h3 {
     margin: 5px auto 10px;
     width: 80%;
 }
+
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    width: 80%;
+    margin: 0 auto;
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+#edit-username {
+    text-align: center;
+    margin: 10px 0;
+}
+
+#conference-modal {
+    background-color: #f0f0f0; 
+    padding: 20px; 
+    border: 1px solid #ccc; 
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 100;
+}
+
+#conference-modal input {
+    display: block;
+    margin: 5px auto 10px;
+    width: 80%;
+}
