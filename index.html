@@ -4,42 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conference Planner</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .profile {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .conference-list {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .conference-item {
+            background: #ecf0f1;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .editable {
+            border: 1px dashed #7f8c8d;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: text;
+        }
+        #add-conference {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        input[type="text"], input[type="datetime-local"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <h1>Welcome, <span id="username">DefaultUser</span>!</h1>
-            <button id="edit-username-btn">Edit Username</button>
-        </header>
-        <main>
-            <div id="profile">
-                <h2>Your Profile</h2>
-                <p>Username: <span id="profile-username">DefaultUser</span></p>
-                <div id="edit-username" style="display:none;">
-                    <input type="text" id="new-username" placeholder="New Username">
-                    <button id="save-username-btn">Save</button>
-                </div>
-            </div>
-            <div id="planner">
-                <h2>Your Conferences</h2>
-                <ul id="conference-list"></ul>
-                <button id="add-conference-btn">Add Conference</button>
-            </div>
-        </main>
-        <footer>
-            <p>Conference Planner App</p>
-        </footer>
 
-        <!-- Conference Modal -->
-        <div id="conference-modal" style="display:none;">
-            <h3>Create Conference</h3>
+    <h1>Conference Planner</h1>
+    
+    <div class="profile">
+        <h2 class="editable" contenteditable="true" id="username">DefaultUser</h2>
+        <p>Edit your username by clicking on it!</p>
+    </div>
+    
+    <div class="conference">
+        <h2>Your Conferences</h2>
+        <div class="conference-list" id="conference-list"></div>
+        
+        <div id="add-conference">
             <input type="text" id="conference-title" placeholder="Conference Title">
             <input type="datetime-local" id="conference-date">
-            <button id="save-conference-btn">Save Conference</button>
-            <button id="close-modal-btn">Cancel</button>
+            <button id="save-conference-btn">Add Conference</button>
         </div>
     </div>
-    <script src="script.js" defer></script>
+    
+    <script>
+        const usernameElement = document.getElementById('username');
+        const conferenceList = document.getElementById('conference-list');
+        const conferenceTitleInput = document.getElementById('conference-title');
+        const conferenceDateInput = document.getElementById('conference-date');
+        
+        document.getElementById('save-conference-btn').addEventListener('click', addConference);
+        
+        function addConference() {
+            const title = conferenceTitleInput.value;
+            const date = new Date(conferenceDateInput.value);
+            if (title && date) {
+                const li = document.createElement('div');
+                li.className = 'conference-item';
+                li.innerHTML = `<span class="conference-title">${title}</span> - <span class="conference-countdown">${calculateCountdown(date)}</span>`;
+                conferenceList.appendChild(li);
+                conferenceTitleInput.value = '';
+                conferenceDateInput.value = '';
+
+                const countdown = setInterval(() => {
+                    const diff = date - new Date();
+                    if (diff <= 0) {
+                        li.querySelector('.conference-countdown').textContent = `${title} - This conference has started!`;
+                        clearInterval(countdown);
+                    } else {
+                        li.querySelector('.conference-countdown').textContent = calculateCountdown(date);
+                    }
+                }, 1000);
+            }
+        }
+
+        function calculateCountdown(date) {onst seconds = Math.floor((date - new Date()) / 1000);
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${hours}h ${minutes}m ${secs}s`;
+        }
+
+        // Добавление функции для изменения имени пользователя
+        usernameElement.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // предотвращает переход на новую строку
+                this.blur(); // убирает фокус при нажатии Enter
+            }
+        });
+    </script>
 </body>
 </html>
