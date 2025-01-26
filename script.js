@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+...document.addEventListener('DOMContentLoaded', () => {
     const usernameElement = document.getElementById('username');
     const profileUsernameElement = document.getElementById('profile-username');
     const editUsernameBtn = document.getElementById('edit-username-btn');
@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-username').style.display = 'block';
     });
 
-    saveUsernameBtn.addEventListener('click', () => {
+
+saveUsernameBtn.addEventListener('click', () => {
         username = newUsernameInput.value;
         newUsernameInput.value = '';
         document.getElementById('edit-username').style.display = 'none';
@@ -47,9 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const date = new Date(conferenceDateInput.value);
         conferenceTitleInput.value = '';
         conferenceDateInput.value = '';
-
-
-conferenceModal.style.display = 'none';
+        conferenceModal.style.display = 'none';
 
         // Create new conference item
         const li = document.createElement('li');
