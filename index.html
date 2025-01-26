@@ -77,46 +77,73 @@
         const conferenceList = document.getElementById('conference-list');
         const conferenceTitleInput = document.getElementById('conference-title');
         const conferenceDateInput = document.getElementById('conference-date');
+
+        // Загружаем данные из Local Storage при загрузке страницы
+        window.onload = function() {
+            const savedUsername = localStorage.getItem('username');
+            usernameElement.textContent = savedUsername ? savedUsername : 'DefaultUser';
+            const savedConferences = JSON.parse(localStorage.getItem('conferences')) || [];
+            savedConferences.forEach(conference => addConferenceToList(conference.title, new Date(conference.date)));
+        };
+
+        // Сохраняем данные в Local Storage
+        function saveData() {
+            localStorage.setItem('username', usernameElement.textContent);
+            const conferences = [];
+            document.querySelectorAll('.conference-item').forEach(item => {
+                const title = item.querySelector('.conference-title').textContent;
+                const countdown = item.querySelector('.conference-countdown').textContent;
+                conferences.push({ title, date: countdown });
+            });
+            localStorage.setItem('conferences', JSON.stringify(conferences));
+        }
         
-        document.getElementById('save-conference-btn').addEventListener('click', addConference);
-        
+        usernameElement.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {event.preventDefault(); // предотвращает переход на новую строку
+                this.blur(); // убирает фокус при нажатии Enter
+                saveData(); // Сохраняем пользовательское имя в Local Storage
+            }
+        });
+
+        document.getElementById('save-conference-btn').addEventListener('click', function() {
+            addConference();
+        });
+
         function addConference() {
             const title = conferenceTitleInput.value;
             const date = new Date(conferenceDateInput.value);
             if (title && date) {
-                const li = document.createElement('div');
-                li.className = 'conference-item';
-                li.innerHTML = `<span class="conference-title">${title}</span> - <span class="conference-countdown">${calculateCountdown(date)}</span>`;
-                conferenceList.appendChild(li);
+                addConferenceToList(title, date);
                 conferenceTitleInput.value = '';
                 conferenceDateInput.value = '';
-
-                const countdown = setInterval(() => {
-                    const diff = date - new Date();
-                    if (diff <= 0) {
-                        li.querySelector('.conference-countdown').textContent = `${title} - This conference has started!`;
-                        clearInterval(countdown);
-                    } else {
-                        li.querySelector('.conference-countdown').textContent = calculateCountdown(date);
-                    }
-                }, 1000);
+                saveData(); // Сохраняем новую конференцию в Local Storage
             }
         }
 
-        function calculateCountdown(date) {onst seconds = Math.floor((date - new Date()) / 1000);
+        function addConferenceToList(title, date) {
+            const li = document.createElement('div');
+            li.className = 'conference-item';
+            li.innerHTML = `<span class="conference-title">${title}</span> - <span class="conference-countdown">${calculateCountdown(date)}</span>`;
+            conferenceList.appendChild(li);
+
+            const countdown = setInterval(() => {
+                const diff = date - new Date();
+                if (diff <= 0) {
+                    li.querySelector('.conference-countdown').textContent = `${title} - This conference has started!`;
+                    clearInterval(countdown);
+                } else {
+                    li.querySelector('.conference-countdown').textContent = calculateCountdown(date);
+                }
+            }, 1000);
+        }
+
+        function calculateCountdown(date) {
+            const seconds = Math.floor((date - new Date()) / 1000);
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
             const secs = seconds % 60;
             return `${hours}h ${minutes}m ${secs}s`;
         }
-
-        // Добавление функции для изменения имени пользователя
-        usernameElement.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // предотвращает переход на новую строку
-                this.blur(); // убирает фокус при нажатии Enter
-            }
-        });
     </script>
 </body>
 </html>
