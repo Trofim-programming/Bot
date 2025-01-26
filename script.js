@@ -1,96 +1,81 @@
-// Telegram Web App API
-const tg = window.Telegram.WebApp;
+document.addEventListener('DOMContentLoaded', () => {
+    const usernameElement = document.getElementById('username');
+    const profileUsernameElement = document.getElementById('profile-username');
+    const editUsernameBtn = document.getElementById('edit-username-btn');
+    const saveUsernameBtn = document.getElementById('save-username-btn');
+    const newUsernameInput = document.getElementById('new-username');
+    const addConferenceBtn = document.getElementById('add-conference-btn');
+    const conferenceList = document.getElementById('conference-list');
+    
+    const conferenceModal = document.getElementById('conference-modal');
+    const conferenceTitleInput = document.getElementById('conference-title');
+    const conferenceDateInput = document.getElementById('conference-date');
+    const saveConferenceBtn = document.getElementById('save-conference-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
 
-// Установить никнейм пользователя в интерфейсе
-document.getElementById("username").textContent = tg.initDataUnsafe.user.username;
-document.getElementById("profile-username").textContent = tg.initDataUnsafe.user.username;
-
-// Локальные данные конференций
-let conferences = [];
-
-// Функция добавления конференции
-function addConference() {
-    const conferenceName = prompt("Enter conference name:");
-    const conferenceDate = prompt("Enter date (YYYY-MM-DD HH:mm):");
-
-    if (conferenceName && conferenceDate) {
-        const conference = {
-            name: conferenceName,
-            date: new Date(conferenceDate),
-            timer: null
-        };
-        conferences.push(conference);
-        updateConferenceList();
+    let username = 'DefaultUser';
+    
+    // Update username highlights
+    function updateUsernameDisplay() {
+        usernameElement.textContent = username;
+        profileUsernameElement.textContent = username;
     }
-}
 
-// Обновить список конференций и добавить таймер
-function updateConferenceList() {
-    const list = document.getElementById("conference-list");
-    list.innerHTML = "";
-
-    conferences.forEach((conf, index) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${conf.name} - ${formatTime(conf.date)}`;
-
-        // Создать таймер
-        const timerElement = document.createElement("span");
-        timerElement.id = `timer-${index}`;
-        listItem.appendChild(timerElement);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.onclick = () => {
-            conferences.splice(index, 1);
-            updateConferenceList();
-        };
-
-        listItem.appendChild(deleteBtn);
-        list.appendChild(listItem);
-
-        // Обновление таймера каждую секунду
-        conf.timer = setInterval(() => updateTimer(conf, index), 1000);
+    // Edit username functionality
+    editUsernameBtn.addEventListener('click', () => {
+        document.getElementById('edit-username').style.display = 'block';
     });
-}
 
-// Форматирование времени
-function formatTime(conferenceDate) {
-    const now = new Date();
-    const diff = conferenceDate - now;
+    saveUsernameBtn.addEventListener('click', () => {
+        username = newUsernameInput.value;
+        newUsernameInput.value = '';
+        document.getElementById('edit-username').style.display = 'none';
+        updateUsernameDisplay();
+    });
 
-    if (diff <= 0) {
-        return "Conference has started!";
+    // Add Conference functionality
+    addConferenceBtn.addEventListener('click', () => {
+        conferenceModal.style.display = 'block';
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        conferenceModal.style.display = 'none';
+    });
+
+    saveConferenceBtn.addEventListener('click', () => {
+        const title = conferenceTitleInput.value;
+        const date = new Date(conferenceDateInput.value);
+        conferenceTitleInput.value = '';
+        conferenceDateInput.value = '';
+
+
+conferenceModal.style.display = 'none';
+
+        // Create new conference item
+        const li = document.createElement('li');
+        li.textContent = `${title} - Starts in: ${calculateCountdown(date)}`;
+        conferenceList.appendChild(li);
+
+        const countdown = setInterval(() => {
+            const diff = date - new Date();
+            if (diff <= 0) {
+                li.textContent = `${title} - This conference has started!`;
+                clearInterval(countdown);
+            } else {
+                li.textContent = `${title} - Starts in: ${calculateCountdown(date)}`;
+            }
+        }, 1000);
+    });
+
+    // Function to calculate countdown
+    function calculateCountdown(date) {
+        const seconds = Math.floor((date - new Date()) / 1000);
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours}h ${minutes}m ${secs}s`;
     }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    return `${days}d ${hours}h ${minutes}m`;
-}
-
-// Обновить таймер на экране
-function updateTimer(conference, index) {
-    const timerElement = document.getElementById(`timer-${index}`);
-    timerElement.textContent = ` - Time left: ${formatTime(conference.date)}`;
-}
-
-// Обработчик изменения юзернейма
-document.getElementById("edit-username-btn").addEventListener("click", () => {
-    document.getElementById("edit-username").style.display = "block";
+    
+    updateUsernameDisplay();
 });
-
-document.getElementById("save-username-btn").addEventListener("click", () => {
-    const newUsername = document.getElementById("new-username").value;
-    if (newUsername) {
-        tg.sendData({ username: newUsername });
-        document.getElementById("profile-username").textContent = newUsername;
-        document.getElementById("edit-username").style.display = "none";
-    }
-});
-
-// Навесить обработчик на кнопку добавления конференции
-document.getElementById("add-conference-btn").addEventListener("click", addConference);
-
-// Инициализация интерфейса
-tg.ready();
+...
