@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conference Planner</title>
     <link rel="stylesheet" href="styles.css">
-    
 </head>
 <body>
     <div id="app">
         <header>
-            <h1>Welcome, <span id="username"></span>!</h1>
+            <h1>Welcome, <span id="username">DefaultUser</span>!</h1>
             <button id="edit-username-btn">Edit Username</button>
         </header>
         <main>
             <div id="profile">
                 <h2>Your Profile</h2>
-                <p>Username: <span id="profile-username"></span></p>
+                <p>Username: <span id="profile-username">DefaultUser</span></p>
                 <div id="edit-username" style="display:none;">
                     <input type="text" id="new-username" placeholder="New Username">
                     <button id="save-username-btn">Save</button>
@@ -31,6 +30,15 @@
         <footer>
             <p>Conference Planner App</p>
         </footer>
+
+        <!-- Conference Modal -->
+        <div id="conference-modal" style="display:none;">
+            <h3>Create Conference</h3>
+            <input type="text" id="conference-title" placeholder="Conference Title">
+            <input type="datetime-local" id="conference-date">
+            <button id="save-conference-btn">Save Conference</button>
+            <button id="close-modal-btn">Cancel</button>
+        </div>
     </div>
     <script src="script.js" defer></script>
 </body>
